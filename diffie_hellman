@@ -1,0 +1,75 @@
+function isPrime(number) {
+    if (number <= 1) {
+        return false;
+    }
+    for (let i = 2; i < number; i++) {
+        if (number % i === 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function findPIndexes(p) {
+    let y = p - 1;
+    let pIndexes = [];
+
+    for (let i = 2; i <= Math.sqrt(y); i++) {
+        if (y % i === 0) {
+            if (isPrime(i)) {
+                pIndexes.push(i);
+            }
+            if (i !== y / i && isPrime(y / i)) {
+                pIndexes.push(y / i);
+            }
+        }
+    }
+    return pIndexes;
+}
+
+function powerMod(base, exponent, modulus) {
+    let result = 1;
+    for (let i = 0; i < exponent; i++) {
+        result = (result * base) % modulus;
+    }
+    return result;
+}
+
+function testIndexes(a, p) {
+    let indexes = findPIndexes(p);
+    let testedIndexes = [];
+
+    for (let i = 0; i < indexes.length; i++) {
+        let exponent = (p - 1) / indexes[i];
+        let result = powerMod(a, exponent, p);
+        testedIndexes.push(result);
+    }
+    return testedIndexes;
+}
+
+function ifPrimitiveRoot(indexes){
+    for(let i = 0; i < indexes.length; i++){
+        if(indexes[i] == 1){
+            return 'Шукайте інший примітивний корень.'
+        }
+        return 'Корень пройшов випробування.'
+    }
+}
+
+let a = 124570;
+let p = 131071;
+
+let xa = 8194;
+let xb = 2690;
+
+let ya = powerMod(a, xa, p);
+let yb = powerMod(a, xb, p);
+
+let ka = powerMod(yb, xa, p);
+let kb = powerMod(ya, xb, p);
+
+console.log(findPIndexes(p));
+console.log(testIndexes(a, p));
+console.log(ifPrimitiveRoot(testIndexes(a,p)));
+console.log("ya = ", ya,", yb = ", yb);
+console.log("ka = ", ka,", kb = ", kb);
